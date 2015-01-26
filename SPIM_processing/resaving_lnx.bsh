@@ -1,0 +1,17 @@
+import ij.IJ;
+import ij.ImagePlus;
+import java.lang.Runtime;
+import java.io.File;
+import java.io.FilenameFilter;
+ 
+runtime = Runtime.getRuntime();
+ 
+dir = System.getProperty( "dir" );
+timepoint = System.getProperty( "timepoint" ); 
+angle = System.getProperty( "angle" );
+ 
+IJ.run("Bio-Formats Importer", "open=" + dir + "07_05_30hpf_Subset_Subset_view" + timepoint + ".czi" + " autoscale color_mode=Default specify_range view=[Standard ImageJ] stack_order=Default t_begin=1000 t_end=1000 t_step=1");
+IJ.saveAs("Tiff ", dir + "spim_TL" + timepoint + "_Angle" + angle + ".tif");
+ 
+/* shutdown */
+runtime.exit(0);
