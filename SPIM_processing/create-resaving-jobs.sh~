@@ -13,4 +13,4 @@ do
              -Ddir=$dir -Dtimepoint=$i -Dangle=280 \
              -- --no-splash ${jobs}/resaving.bsh" >> "$job"
         chmod a+x "$job"
-done 
+done
