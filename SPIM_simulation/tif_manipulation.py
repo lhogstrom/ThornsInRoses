@@ -81,8 +81,8 @@ metadata = json.loads(metadata.decode('utf-8'))
 
 ### load tiff with piexif
 import piexif
-tifFile = '/home/lcbb/Documents/Larson/Data/OpenSPIM_Drosophila/tiffs/spim_TL10_Angle4.tiff'
-# tifFile = '/home/lcbb/Documents/Larson/Data/OpenSPIM_Drosophila/spim_TL10_Angle4.ome.tiff'
+# tifFile = '/home/lcbb/Documents/Larson/Data/OpenSPIM_Drosophila/tiffs/spim_TL10_Angle4.tiff'
+tifFile = '/home/lcbb/Documents/Larson/Data/OpenSPIM_Drosophila/spim_TL10_Angle4.ome.tiff'
 g = piexif.load(tifFile)
 g1, g2, g3 = piexif.load(tifFile)
 exifDict = g[0]
