@@ -1,5 +1,5 @@
 #!/bin/bash
-dir="/home/lcbb/Documents/Larson/Data/Fame_SPIM"
+dir="/home/lcbb/Documents/Larson/Data/Fame_SPIM/green"
 jobs="$dir/jobs/resaving"
  
 mkdir -p $jobs
