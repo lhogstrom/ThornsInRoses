@@ -10,8 +10,9 @@ Entrez.email = "Your.Name.Here@example.org"
 # handle = Entrez.efetch(db="pubmed", id="25081398", rettype="abstract")
 # search_term = ".com&Cambridge, MA"
 # search_term = ".com&Boston"
-search_term = "Novartis&Cambridge, MA"
-oFile = outDir + '/Novartis_tbl.txt'
+#search_term = "Novartis&Cambridge, MA"
+search_term = "adjuvant&breast&Cambridge, MA"
+oFile = outDir + '/adjuvant_therapy_tbl.txt'
 # search_term = "Oncotype&Cambridge"
 # oFile = outDir + '/oncotype_dx_tbl.txt'
 handle = Entrez.esearch(db="pubmed", rettype="abstract", term=search_term,retmax=100)
@@ -55,7 +56,7 @@ else:
     aFrm = pd.DataFrame(articles_dict)
     aFrm = aFrm.T # transpose
     # save file
-    aFrm.to_csv(oFile,sep='\t', encoding='utf-8')
+    #aFrm.to_csv(oFile,sep='\t', encoding='utf-8')
 # journal_name = record[0]['MedlineCitation']['Article']['Journal']['Title']
 # abstract_text = record[0]['MedlineCitation']['Article']['Abstract']
 
