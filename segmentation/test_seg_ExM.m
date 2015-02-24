@@ -43,9 +43,58 @@ a_mask = a>40;
 w = [-1 -1 -1; -1 8 -1; -1 -1 -1];
 g = abs(imfilter(double(a),w));
 % T = max(g(:));
-T = 600;
+T = 600; % set arbitrary threshold 
 g = g >= T;
 imshow(g)
+
+%% line detection
+
+%w = [2 -1 -1; -1 2 -1; -1 -1 2]; %45 degree 
+% w = [-1 -1 -1; 2 2 2; -1 -1 -1]; %horizontal  
+% w = [-1 2 -1; -1 2 -1; -1 2 -1]; %vertical
+
+% horizontal line
+p = 8
+w = zeros(p);
+w(:) = -1;
+w(2:3,:) = 2; % horizontal
+g = abs(imfilter(double(a),w));
+g = imfilter(double(a),w);
+%imshow(g)
+% highest 5% of correlated values
+npix = length(g(:));
+gs = sort(g(:),'descend');
+ithresh = (npix * .01);
+thresh = gs(round(ithresh));
+gt_horiz = g >= thresh;
+imshow(gt)
+
+% verical lines
+p = 8
+w = zeros(p);
+w(:) = -1;
+w(:,2:3) = 2; % verical
+g = abs(imfilter(double(a),w));
+g = imfilter(double(a),w);
+%imshow(g)
+% highest 5% of correlated values
+npix = length(g(:));
+gs = sort(g(:),'descend');
+ithresh = (npix * .01);
+thresh = gs(round(ithresh));
+gt_vert = g >= thresh;
+imshow(gt)
+
+
+HorVert = zeros(512,512,3);
+HorVert(:,:,1) = a;
+HorVert(:,:,2) = gt_horiz;
+HorVert(:,:,3) = gt_vert;
+imshow(HorVert)
+
+%%
+m = A(:,:,2:3);
+imshow(m)
 
 %% adapt boundary example to confocal
 
