@@ -69,6 +69,32 @@
     imageC = ifft2(F);
     figure, imshow(abs(imageC), [24 100])
 
+    %% take out horizontal components
+    [m,n]=size(F)
+
+    F_mod = F;
+    
+    % zero corners
+%     b = 800
+%     F_mod(1:b,1:b) = zeros(b,b); % take out upper left corner
+%     F_mod(m-b:end-1,n-b+1:end) = zeros(b,b); % take out upper left corner
+%     F_mod(m-b:end-1,1:b) = zeros(b,b); % take out lower left corner
+%     F_mod(1:b,n-b+1:end) = zeros(b,b); % take out upper right corner
+
+    %zero left/right or up/down edges
+    b = 30
+%     F_mod(1:end,1:b) = zeros(m,b); % take out left edge
+%     F_mod(1:end,n-b+1:end) = zeros(m,b); % take out right edge
+    F_mod(1:b,1:end) = zeros(b,n); % take out left edge
+    F_mod(m-b+1:end,1:end) = zeros(b,n); % take out right edge
+
+    figure, imshow(abs(F_mod),[24 100000]), colormap gray    
+    figure, imshow(abs(F),[24 100000]), colormap gray
+    
+    
+    %fsF = fftshift(F)
+    imageC_mod = ifft2(F_mod);
+    figure, imshow(abs(imageC_mod), [24 100])
 %% or with alternative image
 
 % confocal image
