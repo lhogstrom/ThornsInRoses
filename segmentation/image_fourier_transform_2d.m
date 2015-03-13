@@ -33,14 +33,14 @@
 %% load real-world images
 
     % Town Hall building
-%     path1 = '/Users/hogstrom/Dropbox (MIT)/Neuron_data/Fourier_analysis';
-% %     file1 = fullfile(path1, 'bch_beams.jpg');
-%     file1 = fullfile(path1, 'bch2.jpg');
+    path1 = '/Users/hogstrom/Dropbox (MIT)/Neuron_data/Fourier_analysis';
+%     file1 = fullfile(path1, 'bch_beams.jpg');
+    file1 = fullfile(path1, 'bch2.jpg');
 
     % confocal image
-    path1 = '/Users/hogstrom/Dropbox (MIT)/Larson/confocal';
-    %file1 = fullfile(path1, 'Syn1_2000X_PSD95_MAP2_M100X_2.png');
-    file1 = fullfile(path1, 'Syn1_2000X_PSD95_MAP2_M60X.png');
+%     path1 = '/Users/hogstrom/Dropbox (MIT)/Larson/confocal';
+%     file1 = fullfile(path1, 'Syn1_2000X_PSD95_MAP2_M100X_2.png');
+%     file1 = fullfile(path1, 'Syn1_2000X_PSD95_MAP2_M60X.png');
     
     A = imread(file1);
     f = A(:,:,3);
