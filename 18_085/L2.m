@@ -68,11 +68,11 @@ end
 n = 20;
 Kn = toeplitz( [2 -1 zeros(1,n-2)] );
 
-x = ones(n, 1) + 3; 
-%x = (1:n)'; 
-%x = (1:n)'.^2
-%x = [zeros(n/2,1);(1:n/2)'];
-%x = sin( (1:n)'/2 );
+% x = ones(n, 1) + 3; 
+% x = (1:n)'; 
+% x = (1:n)'.^2
+% x = [zeros(n/2,1);(1:n/2)'];
+x = sin( (1:n)'/2 );
 subplot(1,2,1)
 plot( x(2:end-1),'.r','markersize',30)
 xlim([1 n-2]),set(gca,'fontsize',20)

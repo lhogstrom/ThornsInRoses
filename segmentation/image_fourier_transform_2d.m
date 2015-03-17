@@ -70,8 +70,8 @@
     figure, imshow(abs(imageC), [24 100])
 
     %% take out horizontal components
+    F = fft2(double(f));
     [m,n]=size(F)
-
     F_mod = F;
     
     % zero corners
@@ -99,8 +99,8 @@
 
 % confocal image
 path1 = '/Users/hogstrom/Dropbox (MIT)/Larson/confocal';
-%file1 = fullfile(path1, 'Syn1_2000X_PSD95_MAP2_M100X_2.png');
-file1 = fullfile(path1, 'Syn1_2000X_PSD95_MAP2_M60X.png');
+file1 = fullfile(path1, 'Syn1_2000X_PSD95_MAP2_M100X_2.png');
+% file1 = fullfile(path1, 'Syn1_2000X_PSD95_MAP2_M60X.png');
 A = imread(file1);
 
 %imshow(A)
