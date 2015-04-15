@@ -28,8 +28,8 @@ shg
 
 %% Gerschgorin's Theorem
 
-A = [1 2 ; 1 5];
-A = [1 -2 ; 1 -1];
+% A = [1 2 ; 1 5];
+% A = [1 -2 ; 1 -1];
 A = [10 -2 0 1; .2 8 .2 .2; 1 1 2 1; -.2 -.1 0 -3]; 
 ev = eig( A ); 
 plot(ev+1i*eps, 'r.', 'markersize', 30), hold on,
@@ -48,10 +48,10 @@ axis equal, set(gca,'fontsize',16)
 n = 20; h = 1/(n+1); 
 Kn = toeplitz( [2 -1 zeros(1,n-2)] );
 
-x = ones(n, 1); 
+% x = ones(n, 1); 
 %x = (1:n)'; 
-%x = (1:n)'.^2
-%x = sin( 2*(1:n)'*pi*h );
+% x = (1:n)'.^2
+x = sin( 2*(1:n)'*pi*h );
 subplot(1,2,1)
 plot( x(2:end-1),'.r','markersize',30)
 xlim([1 n-2]),set(gca,'fontsize',20)
