@@ -23,11 +23,56 @@ Final Project
 
 April 16, 2015 \\
 
-\textbf{definition} For a nonnegative matrix $A \in \mathbb{R}^{m x n}$, select a low-rank approximation of size k such that there are two nonnegative matrices \textbf{W} $ \in \mathbb{R}^{m x k}$ and \textbf{H} $ \in \mathbb{R}^{k x n}$ which minimizes a function such as 
+\textbf{Outline}
+
+-Introduction + definition
+
+-cost functions: Euclidian distance, Frobinius norm, KL divergence, Renyi's divergence. Can you construct a situation in which certain norms are better than others?
+
+-update rules: multiplicative update, ALS method, gradient methods
+
+-computational comparison: flop counts, accuracy, size of inputs
+
+-applications to calculating metagenes \\
+
+\textbf{Introduction} \\
+This report introduces the framework for parts-based representations using NMF and focuses on the algorithms and numerical aspects of computation. \\
+
+\textbf{definition} For a nonnegative matrix $\bf{A} \in \mathbb{R}^{m x n}$, select a low-rank approximation of size k such that there are two nonnegative matrices \textbf{W} $ \in \mathbb{R}^{m x k}$ and \textbf{H} $ \in \mathbb{R}^{k x n}$ which minimizes a function such as 
 $$ f( \textbf{W,H}) = \frac{1}{2} || \textbf{A - WH} || ^{2}_{F}$$
 
 
+Other commonly used objective functions include Euclidian distance and Kullback-Leibler (KL) divergence. KL can be extended to a more general information-based framework using Renyi's divergence. (Devarajan, 2005). Here, a single parameter $\alpha$ is used to represent a continuum of distance measures and KL airises as a special case as $\alpha \to 1$. 
 
+$$ KL(V || WH) = \sum_{ij}{[V_{ij} \log{ \frac{V_{ij}}{(WH)_{ij}} - V_{ij} + (WH)_{ij}} ]} $$
+
+
+
+
+
+\pagebreak 
+\textbf{Fundamental Algorithms} \\
+
+One of the first and most widely adopted algorithms for NMF is the multiplicative update rule. This takes the general form: \\
+
+
+\begin{algorithm}[H]
+ \KwData{Input data matrix:  $\bf{A} \in \mathbb{R}^{m x n}$}
+ \KwResult{nonnegative factorization of \textbf{A} using k components, creating matrices \textbf{W} $ \in \mathbb{R}^{m x k}$ and \textbf{H} $ \in \mathbb{R}^{k x n}$ }
+
+ initialization\;
+$\bf{W} \gets $ random dense (m x k) matrix\\
+$\bf{H} \gets $ random dense (k x n) matrix\\
+ \For{i = 1 to \text{maxiter} }{
+ 	$\bf{H = H .* (W^T A) ./ (W^T WH)} $
+	
+ 	$\bf{W = W .* (A H^T) ./ (WHH^T)} $	}
+ \caption{multiplicative update}
+\end{algorithm} 
+
+
+Often the \\
+requires O(mnk) work per iteration
 
 
 \end{document}

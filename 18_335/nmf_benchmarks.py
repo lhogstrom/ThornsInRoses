@@ -3,7 +3,7 @@
 import numpy as np
 from lin_nmf import *
 import matplotlib.pyplot as plt 
-from nmf_multiplicative_update import *
+import nmf_multiplicative_update as nmflh
 from time import time
 import os
 
@@ -11,7 +11,7 @@ wkdir = '/Users/hogstrom/Dropbox (Personal)/cources_spring_2015_MIT/18_335_Numer
 
 n=5
 ### plot error from matrix of increasing size
-a = [ pow(2,i) for i in range(12) ]
+a = [ pow(2,i) for i in range(13) ]
 meanVec = np.zeros((2,len(a)))
 for i,m in enumerate(a):
     print m 
@@ -20,7 +20,7 @@ for i,m in enumerate(a):
     v = np.dot(w1,h1)
     #nmf decomposition of v:
     #multiplicative update
-    (wo,ho) = nmf_mu(v,np.random.rand(m,n), np.random.rand(n,m),5,100)
+    (wo,ho) = nmflh.nmf_mu(v,np.random.rand(m,n), np.random.rand(n,m),5,100)
     # projection gradient
     (w_pg,h_pg) = nmf(v, np.random.rand(m,n), np.random.rand(n,m), 0.001, 10, 10)
     #backward-like stability measure
@@ -29,17 +29,16 @@ for i,m in enumerate(a):
     meanVec[0,i] = diffMtrx.mean()
     meanVec[1,i] = diffMtrx2.mean()
 #plot changes in error 
-# plt.plot(a,meanVec[0])
 fig = plt.figure()
 ax = fig.add_subplot(1,1,1)
 plt.plot(a,meanVec[0,:],color='b',label='multiplicative_update')
-plt.plot(a,meanVec[1,:],color='r',label='gradient_projection')
+plt.plot(a,meanVec[1,:],'r--',label='gradient_projection')
 ax.set_xscale('log')
 plt.title('NMF entry error')
 plt.xlabel('matrix length')
 plt.ylabel('mean error')
 plt.legend(loc=2)
-outFile = os.path.join(wkdir, 'multiplicative_update_time.png')
+outFile = os.path.join(wkdir, 'projection_gradient_vs_multiplicative_update_error.png')
 plt.savefig(outFile)
 plt.close()
 
@@ -48,14 +47,14 @@ a = [ pow(2,i) for i in range(13) ]
 m = 500
 n = 5
 meanVec = np.zeros((1,len(a)))
-for i,m in enumerate(a):
+for i,j in enumerate(a):
     print m 
     w1 = np.random.rand(m,n)
     h1 = np.random.rand(n,m)
     v = np.dot(w1,h1)
     #nmf decomposition of v:
     #multiplicative update
-    (wo,ho) = nmf_mu(v,np.random.rand(m,n), np.random.rand(n,m),5,m)
+    (wo,ho) = nmflh.nmf_mu(v,np.random.rand(m,n), np.random.rand(n,m),5,j)
     # projection gradient
     #backward-like stability measure
     diffMtrx = np.dot(w1,h1) - np.dot(wo,ho)
@@ -84,7 +83,7 @@ for i,m in enumerate(a):
     #nmf decomposition of v:
     #multiplicative update
     initt = time()
-    (wo,ho) = nmf_mu(v,np.random.rand(m,n), np.random.rand(n,m),5,100)
+    (wo,ho) = nmflh.nmf_mu(v,np.random.rand(m,n), np.random.rand(n,m),5,100)
     tafter = time() - initt
     meanVec[0,i] = tafter
 #plot
@@ -100,3 +99,13 @@ plt.legend(loc=2)
 outFile = os.path.join(wkdir, 'multiplicative_update_time.png')
 plt.savefig(outFile)
 plt.close()
+
+
+# try gradient descent method
+# m = 20
+# n = 500
+# w1 = np.random.rand(m,n)
+# h1 = np.random.rand(n,m)
+# v = np.dot(w1,h1)
+# (wo,ho) = nmflh.nmf_gd(v,np.random.rand(m,n), np.random.rand(n,m),5,1000, .001)
+# diffMtrx = np.dot(w1,h1) - np.dot(wo,ho)

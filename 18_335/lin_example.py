@@ -142,3 +142,31 @@ plt.xlabel('seconds')
 plt.ylabel('mean error')
 plt.legend(loc=2)
 plt.show()
+
+### scratch for Alternative Least Squares (ALS) method
+max_iter = 100
+A = np.dot(w1,h1)
+W = np.random.rand(m,n)
+H = np.random.rand(n,m)
+for i in range(max_iter):
+    H = H*(np.dot(W.T,A)) / (reduce(np.dot, [W.T, W, H]) + 1E-9)
+    W = W*(np.dot(A,H.T)) / (reduce(np.dot, [W, H, H.T]) + 1E-9)
+A - np.dot(W,H)
+
+
+## numpy solve test
+m = 5
+n = 3
+A = np.random.rand(m,n)
+b = np.random.random(m)
+B = np.random.rand(m,n)
+
+x = np.linalg.lstsq(A,B)
+X = x[0]
+
+np.dot(A,x[0]) - B
+
+# set nonnegative values to zeros
+X_is_neg = X < 0
+X[X_is_neg] = 0
+
