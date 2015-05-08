@@ -12,6 +12,9 @@
 
 \oddsidemargin = 0.2in \evensidemargin = 0.2in
 
+\usepackage{graphicx}
+\graphicspath{ {/Users/hogstrom/Dropbox (Personal)/cources_spring_2015_MIT/18_335_Numeric_Methods/NMF/figures/} }
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
 
 \begin{document}
 
@@ -46,11 +49,10 @@ Other commonly used objective functions include Euclidian distance and Kullback-
 
 $$ KL(V || WH) = \sum_{ij}{[V_{ij} \log{ \frac{V_{ij}}{(WH)_{ij}} - V_{ij} + (WH)_{ij}} ]} $$
 
-
-
-
+more text
 
 \pagebreak 
+
 \textbf{Fundamental Algorithms} \\
 
 One of the first and most widely adopted algorithms for NMF is the multiplicative update rule. This takes the general form: \\
@@ -73,6 +75,13 @@ $\bf{H} \gets $ random dense (k x n) matrix\\
 
 Often the \\
 requires O(mnk) work per iteration
+
+
+\begin{figure}[h!]
+  \caption{A picture of a gull.}
+  \centering
+    \includegraphics{ALS_vs_multiplicative_update_iteration_error}
+\end{figure}
 
 
 \end{document}

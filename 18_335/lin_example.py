@@ -169,4 +169,3 @@ np.dot(A,x[0]) - B
 # set nonnegative values to zeros
 X_is_neg = X < 0
 X[X_is_neg] = 0
-
