@@ -107,8 +107,6 @@ outFile = os.path.join(wkdir, 'ALS_vs_multiplicative_update_iteration_error.png'
 plt.savefig(outFile)
 plt.close()
 
-
-
 ### time used by matrix size n 
 a = [ pow(2,i) for i in range(15) ]
 meanVec = np.zeros((1,len(a)))
