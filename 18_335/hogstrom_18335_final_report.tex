@@ -53,12 +53,17 @@ Other commonly used objective functions include Euclidian distance and Kullback-
 
 $$ KL(V || WH) = \sum_{ij}{[V_{ij} \log{ \frac{V_{ij}}{(WH)_{ij}} - V_{ij} + (WH)_{ij}} ]} $$
 
+The resulting W and H matrices are often interpreted directly. The matrix \textbf{W} $ \in \mathbb{R}^{m x k}$ typically represents the k different components of signal in the original matrix. The \textbf{H} $ \in \mathbb{R}^{k x n}$ matrix can be interpreted as weighting factors defining the linear combination of k components to reconstruct a sample in the original data matrix. In the application of NMF to gene expression data for example, each of the k columns of W represent a 'metagene' response. A small number of these metagene columns can be combined to estimate an original experimental column found in the original data matrix. The H matrix defines the weighting of each metagene. 
 
 
 \section{Update Rules}
 
 \section{Applications to gene expression}
-A classical example of NMF is the factorization of a large database of human face images. Factorization using PCA will yield a series of ?eigenfaces? which can be added or subtracted, but individual components are not easy to interpret on their own. The NMF "parts-based" representation however, yields components like noses, eyes, ears, and mouths which can be added linearly to construct a face. 
+A classical example of NMF is the factorization of a large database of human face images. Factorization using PCA will yield a series of ?eigenfaces? which can be added or subtracted, but individual components are not easy to interpret on their own. The NMF "parts-based" representation however, yields components like noses, eyes, ears, and mouths which can be added linearly to construct a face. Parts-based representations have been helpful in identifying and interpreting patterns in a number of biological contexts. 
+
+NMF has shown to be less sensitive to \textit{a priori} gene selection or initial conditions when identifying context-dependent patterns of gene expression (Brunet, 2004). 
+
+The same properties have been found to be helpful in a number of biological contexts. 
 
 \section{Special fonts}
 
@@ -71,7 +76,7 @@ A classical example of NMF is the factorization of a large database of human fac
 {\emAlgorithms for Nonnegative Matrix Factorization}, Advances in neural information processing (2001)
 
 \bibitem{Berr} {\sc M. Berry, M. Browne, A. Langville, P. Pauca, R. Plemenos},
-{\em Algorithms and applications for approximate nonnegative matrix factorization}, Computational Statistics & Data Analysis 52 (2007) pp. 155 - 173.
+{\em Algorithms and applications for approximate nonnegative matrix factorization}, Computational Statistics & Data Analysis 52 (2007) pp. 155 - 1	73.
 
 \bibitem{Cich} {\sc A. Cichocki, R. Zdunek, A. Huy Phan, S. Amari}, {\em Nonnegative Matrix and Tensor Factorizations}, Wiley, Natick, MA, 2009.
 
