@@ -38,7 +38,6 @@ This report introduces the framework for parts-based representations using NMF a
 
 Nonnegative matrix factorization (NMF) is a dimensionality reduction technique that can be applied in a variety of domains. Like principal component analysis (PCA), NMF seeks to describe a large matrix of data using a small set of information dense components. Unlike PCA, which imposes orthogonality constraints on components, NMF requires nonnegativity after factorization. This procedure allows for only additive combinations of positive components to estimate the input matrix. The endpoint is a parts-based representation of the starting data where each component is more easily interpreted than PCA. 
 
-
 A number of algorithms have been proposed in order to construct the NMF factorization with positivity constraints. Iterative algorithms, for example, build the WH factorization while converging on a local maximum of a specified object function. This project will examine two of such objective functions 1) the conventional least squares difference between the input and the factorization and 2) an objective function based on the Kullback-Leibler divergence2. The flop counts of algorithmic update rules for both approaches will both be assessed analytically and the different conditions for monotonic convergence will be examined. Both algorithms will be implemented in python using the ?numpy? and ?scipy? packages. The two approaches will be compared as follows: 1) In numeric simulations of input matrices with known contributions of signal and noise 2) using real-world gene expression data of cancer cells that have been exposed to different drugs grouped into known pharmacological classes. In simulations, the two algorithms will be compared by their accuracy after a fixed number of iterations. The approaches will also be compared in their ability to classify the gene expression profiles into known pharmacological groups.
 
 \section{Problem Definition and Multiplicative Update Rules}
@@ -56,7 +55,16 @@ $$ KL(V || WH) = \sum_{ij}{[V_{ij} \log{ \frac{V_{ij}}{(WH)_{ij}} - V_{ij} + (WH
 The resulting W and H matrices are often interpreted directly. The matrix \textbf{W} $ \in \mathbb{R}^{m x k}$ typically represents the k different components of signal in the original matrix. The \textbf{H} $ \in \mathbb{R}^{k x n}$ matrix can be interpreted as weighting factors defining the linear combination of k components to reconstruct a sample in the original data matrix. In the application of NMF to gene expression data for example, each of the k columns of W represent a 'metagene' response. A small number of these metagene columns can be combined to estimate an original experimental column found in the original data matrix. The H matrix defines the weighting of each metagene. 
 
 
-\section{Update Rules}
+\section{Multiplicative Update Rule}
+
+\section{Alternating Least Squares}
+
+The alternating least squares can be viewed as a special case of block coordinate descent method. For this class of algorithms, the objective function is minimized with respect to coordinate vectors $x^{k}_{i}$. Multidimensional vectors are minimized in cyclical order, with one block coordinate vector minimized during each iteration. A single iteration takes the form
+
+$$ x^{k+1}_{i} \in {\mathrm{argmin}_{\eps \in X_i}}  $$ 
+
+For the case of NMF, this scenario is especially simple as there are only two 
+
 
 \section{Applications to gene expression}
 A classical example of NMF is the factorization of a large database of human face images. Factorization using PCA will yield a series of ?eigenfaces? which can be added or subtracted, but individual components are not easy to interpret on their own. The NMF "parts-based" representation however, yields components like noses, eyes, ears, and mouths which can be added linearly to construct a face. Parts-based representations have been helpful in identifying and interpreting patterns in a number of biological contexts. 
@@ -65,7 +73,7 @@ NMF has shown to be less sensitive to \textit{a priori} gene selection or initia
 
 The same properties have been found to be helpful in a number of biological contexts. 
 
-\section{Special fonts}
+
 
 
 \begin{thebibliography}{1}
