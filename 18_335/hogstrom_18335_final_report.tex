@@ -25,8 +25,7 @@
 \slugger{mms}{xxxx}{xx}{x}{x--x}%slugger should be set to mms, siap, sicomp, sicon, sidma, sima, simax, sinum, siopt, sisc, or sirev
 
 \begin{abstract}
-This report introduces the framework for parts-based representations using NMF and focuses on the algorithms and numerical aspects of computation. 
-
+This report presents a framework and analysis to compare three common methods used to compute nonnegative matrix factorization (NMF). The parts-based representation obtained through NMF has become a popular approach for dimensionality reduction in a variety of scientific and technical domain. This study focuses on the algorithms and numerical aspects of NMF computation. We review the derivation and continual descent properties of multiplicative update rules which helped to first popularized the NMF approach. Alternating least squares and projection gradient methods are also presented as faster, more recent approaches. The accuracy and convergence of these algorithms is compared using simulated data and two of the methods were applied to a database gene expression profiles measuring drug responses in the MCF7 cancer cell line. Lastly, the objective function of alternating least squares was directly modified to impose sparsity during matrix factorization. The fraction of near-zero entries was compared before and after ALS modification as sparsity results are of known interest to many researchers using NMF. 
 \end{abstract}
 
 \begin{keywords} dimensionality reduction, matrix factorization, least squares, nonnegativity, data representation \end{keywords}
@@ -41,9 +40,19 @@ This report introduces the framework for parts-based representations using NMF a
 
 Nonnegative matrix factorization (NMF) is a dimensionality reduction technique that can be applied in a variety of domains. Like principal component analysis (PCA), NMF seeks to describe a large matrix of data using a small set of information dense components. Unlike PCA, which imposes orthogonality constraints on components, NMF requires nonnegativity after factorization. This procedure allows for only additive combinations of positive components to estimate the input matrix. The endpoint is a parts-based representation of the starting data where each component is more easily interpreted than PCA. 
 
-A number of algorithms have been proposed in order to construct the NMF factorization with positivity constraints. Iterative algorithms, for example, build the WH factorization while converging on a local maximum of a specified object function. This project will examine two of such objective functions 1) the conventional least squares difference between the input and the factorization and 2) an objective function based on the Kullback-Leibler divergence2. The flop counts of algorithmic update rules for both approaches will both be assessed analytically and the different conditions for monotonic convergence will be examined. Both algorithms will be implemented in python using the ?numpy? and ?scipy? packages. The two approaches will be compared as follows: 1) In numeric simulations of input matrices with known contributions of signal and noise 2) using real-world gene expression data of cancer cells that have been exposed to different drugs grouped into known pharmacological classes. In simulations, the two algorithms will be compared by their accuracy after a fixed number of iterations. The approaches will also be compared in their ability to classify the gene expression profiles into known pharmacological groups.
+A number of algorithms have been proposed in order to construct the NMF factorization with positivity constraints. Iterative algorithms, for example, build the WH factorization while converging on a local minimum of a specified object function. 
+
+
+This project will examine two of such objective functions 1) the conventional least squares difference between the input and the factorization and 2) an objective function based on the Kullback-Leibler divergence2. The flop counts of algorithmic update rules for both approaches will both be assessed analytically and the different conditions for monotonic convergence will be examined. 
+
+
+Both algorithms will be implemented in python using the ?numpy? and ?scipy? packages. The two approaches will be compared as follows: 1) In numeric simulations of input matrices with known contributions of signal and noise 2) using real-world gene expression data of cancer cells that have been exposed to different drugs grouped into known pharmacological classes. In simulations, the two algorithms will be compared by their accuracy after a fixed number of iterations. The approaches will also be compared in their ability to classify the gene expression profiles into known pharmacological groups.
 
 This project compares multiple algorithms for computing NMF factorization including gradient and non gradient methods. The motivation 
+
+fixed-point type methods 
+minimization problem with bounded constraints 
+
 
 This report is organized in the following structure. Section 2 defines the NMF approach and reviews commonly used objective functions. Section 3 outlines the multiplicative update rule which is one of the oldest and most widely used procedures to perform matrix decomposition with NMF. Section 4 covers the alternating least squares approach which variations with better characterized convergence properties. This is followed by a discussion of sparsity and initialization conditions. 
 
@@ -75,7 +84,7 @@ The authors noted that this update represents a typical gradient descent rule if
 \begin{equation}\label{et1} \eta_{aj} = \frac{ H_{aj} }{(W^T WH)_{aj}}\end{equation}
 and when placed into equation (3.1), this motivates the multiplicative update rules that seek to minimize the euclidian distance $||A - WH ||$:
 \begin{equation}\label{au1} H_{aj} \leftarrow  H_{aj} \frac{(W^T A)_{aj} }{ (W^T WH)_{aj} } \; \; \; \; \; W_{ia} \leftarrow  W_{ia} \frac{(W^T A)_{ia} }{ (W^T WH)_{ia} }\end{equation}
-Where the same logic for H is also applied to the update of W. Making use of auxiliary functions, Lee and Seung went on to demonstrate the non-increasing properties of NMF under the multiplicative update rules. It has been noted that they incorrectly claimed that algorithm converges to a local minimum (Chu, 2004; Gonzalez and Zhang, 2005, Lin, 2005b). It is certainly possible that continual descent property of multiplicative updates resend to a saddle point (Berry, 2007). \\
+Where the same logic for H is also applied to the update of W. Making use of auxiliary functions, Lee and Seung went on to demonstrate the non-increasing properties of NMF under the multiplicative update rules. It has been noted that they incorrectly claimed that algorithm converges to a local minimum (Chu, 2004; Gonzalez and Zhang, 2005, Lin, 2005b). It is certainly possible that continual descent property of multiplicative updates could descend to a saddle point (Berry, 2007). Furthermore, if $W_{ia} = 0$ after the $k$th iteration, then this entry remains $W_{ia} = 0$ for all subsequent iterations. This property is undesirable because the algorithm could theoretically remain fixed in a non-optimal descent path. \\
 
 \begin{algorithm}[H]
  \KwData{Input data matrix:  $\bf{A} \in \Re^{m x n}$}
@@ -146,6 +155,12 @@ For the block coordinate descent algorithms, it has been shown that the limit po
 
 where $ B \in \Re^{lxm}$ and $y_i \in \Re^{lx1}$. Since there are m inequity constraints after the split, the ith constraint will be active if the ith regression coefficient is set to zero. Thus if the active set is known, active constraints can be treated as equality constraints instead of inequality constraints. The overall least square problem can be solved by examining only the variables in the passive set and calculating their unconstrained least squares solution (Bro, 1997). The ANLS algorithm begins with an initial feasible set of regression coefficients. The zero vector of coefficients is often used as an initial feasible set as no constraints are violated. ANLS proceeds by iteratively removing variables from the active set until the true active set is found. The variables removed from the active set are used in an unconstrained linear regression to calculate the block coordinate descent solution. While the convergence properties of ANLS are better understood, this report omits this strategy in comparative analysis due to the complexity of the algorithm and its slow computation. Recent work has succeeded in improving ANLS speed by precomputing cross-product terms during the unconstrained linear regression calculations (Bro, 1997). 
 
+\section{Sparsity in Alternating least squares}
+Added penalties to objective function to encourage sparse solutions. 
+
+\section{Projection gradient method} 
+
+
 \section{Applications to gene expression}
 A classical example of NMF is the factorization of a large database of human face images. Factorization using PCA will yield a series of ?eigenfaces? which can be added or subtracted, but individual components are not easy to interpret on their own. The NMF "parts-based" representation however, yields components like noses, eyes, ears, and mouths which can be added linearly to construct a face. Parts-based representations have been helpful in identifying and interpreting patterns in a number of biological contexts. 
 
@@ -153,16 +168,12 @@ NMF has shown to be less sensitive to \textit{a priori} gene selection or initia
 
 The same properties have been found to be helpful in a number of biological contexts. 
 
-\section{Sparsity in Alternating least squares}
-Added penalties to objective function to encourage sparse solutions. 
-
-
 \section{Initialization conditions}
 
 \section{Additional computational issues}
 -Sparsity 
 
-
+\section{Conclusion} Despite the simplicity of defining nonnegative matrix factorization, the landscape of numeric methods used to address the problem remains complex. Recent efforts have sought to create new NMF algorithms with well defined convergence properties. Methods such as ___ have succeeded in improving our analytical understanding of NMF convergence, but remain slow and cumbersome when compared to simpler methods that appear to converge in most real-world scenarios. When evaluating NMF tools, researchers should be guided by the parameters of their data and the research question of interest. For especially large datasets the speed and simplicity ALS might serve as a reasonable starting point for NMF calculation. Researchers with modest datasets, might prefer ___ . The results presented in this report also show that researchers can manipulate the sparsity of factorization by adopting specialized objective functions. 
 
 \begin{thebibliography}{1}
 
