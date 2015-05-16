@@ -8,6 +8,8 @@
 
 \usepackage{graphicx}
 \usepackage{algorithm2e}
+\usepackage{amsmath}
+
 \graphicspath{ {"/Users/hogstrom/Dropbox (Personal)/cources_spring_2015_MIT/18_335_Numeric_Methods/NMF/figures/"} }
 \DeclareGraphicsExtensions{.pdf,.png,.jpg}
 
@@ -64,7 +66,7 @@ Other commonly used objective functions include Euclidian distance and Kullback-
 
 $$ KL(V || WH) = \sum_{ij}{[V_{ij} \log{ \frac{V_{ij}}{(WH)_{ij}} - V_{ij} + (WH)_{ij}} ]} $$
 
-Regardless of the objective used to obtain them, the resulting W and H matrices are often interpreted directly. The matrix \textbf{W} $ \in \Re^{m x k}$ typically represents the k different components of signal in the original matrix. The \textbf{H} $ \in \Re^{k x n}$ matrix can be interpreted as weighting factors defining the linear combination of k components to reconstruct a sample in the original data matrix. In the application of NMF to gene expression data for example, each of the k columns of W represent a 'metagene' response. A small number of these metagene columns can be combined to estimate an original experimental column found in the original data matrix. The H matrix defines the weighting of each metagene. 
+Regardless of the objective used to obtain them, the resulting W and H matrices are often interpreted directly. The matrix \textbf{W} $ \in \Re^{m x k}$ typically represents the k different components of signal in the original matrix. The \textbf{H} $ \in \Re^{k x n}$ matrix can be interpreted as weighting factors defining the linear combination of k components used to reconstruct a sample in the original data matrix. In the application of NMF to gene expression data for example, each of the k columns of W represent a 'metagene' response. A small number of these metagene columns can be combined to estimate an original experimental column found in the original data matrix. The H matrix defines the weighting of each metagene. 
 
 
 \section{Multiplicative Update Rule}
@@ -118,8 +120,24 @@ $\bf{H} \gets $ random dense (k x n) matrix\\
  \caption{Alternating least squares}
 \end{algorithm} 
 
-This algorithm acts by repeatedly solving unconstrained subproblems and then modifying the W and H solutions each iteration to satisfy the desired non-negativty constraints. By setting all negative values in W and H to zero, the 
+Each subproblem from in this algorithm is solved in an unconstrained manner and the resulting W and H solutions are modified during each iteration to satisfy the desired non-negativty constraints. The simplicity of setting negative values in W and H to zero provides for an especially fast approach as demonstrated in the comparisons of this study. Theoretical evaluation of this algorithm's convergence properties, however, are difficult because each subproblem is formulated as an unconstrained least squares problem, but the solutions are directly modified and therefore do not map onto the original formulations. Other problem definitions allow for a framework to better understand the convergence properties of the two block coordinate descent method. Alternating non-negativity constrained least squares (ANLS) for instance provides a formulation that directly incorporates non-negative constraints in each block coordinate subproblem (Kim, 2006). Adding the $W \ge 0$ and  $ H \ge 0 $ constraints onto equations () and () respectively, the Karush-Kuh-Tucker (KK) optimality conditions can be used to define stationary points of the objective function (2.1) iif
+\begin{equation}\label{EKx}  W \ge 0,\\
+  \bigtriangledown_W f(W,H)  = WHH^T - AH^T \ge 0,\\
+  W.* \bigtriangledown_Wf(W,H) = 0\end{equation}and \begin{equation}
+  H \ge 0,\\
+  \bigtriangledown_H f(W,H)  = W^T WH - W^T A \ge 0,\\
+  H.* \bigtriangledown_Hf(W,H) = 0  
+\end{equation}
 
+For the block coordinate descent algorithms, it has been shown that the limit point of a sequence of sub-blocks is a stationary point if each subproblem has a unique solution (Bertsekas, 1999). Unfortunately, ANLS subproblems are not unique as there exists matrices in the form $ \textbf{X} \in \Re^{kxk} $ which represent scaling and permutation that satisfy $ || \textbf{A - WH} ||_{F} = || \textbf{A - WXX}^{-1} \textbf{H} ||_{F} $ (Kim, 2006).  In the case of two bock problems, however, stationary points can be found as the limit point of the sequence of two sub-block solutions (Grippo, 2000). One classical approach to solving the two block subploblems is by way of an $\textit{active set algorithm}$ (Lawson, 1974). Here, the difference between a input matrix $ Y \in \Re^{lxp}$  and its resultant factorization cab be split into vectors:
+
+\begin{equation}
+\begin{align} 
+    \min_{G \ge 0} || BG-Y ||^{2}_{F} \to  \min_{G \ge 0} || B\textbf{g}_1-\textbf{y}_1 ||^{2}_{2}, ...,   \min_{G \ge 0} || B\textbf{g}_l-\textbf{y}_m ||^{2}_{2}
+\end{align}
+\end{equation}
+
+where $ B \in \Re^{lxm}$ and $y_i \in \Re^{lx1}$. Since there are m inequity constraints after the split, the ith constraint will be active if the ith regression coefficient is set to zero. Thus if the active set is known, active constraints can be treated as equality constraints instead of inequality constraints. The overall least square problem can be solved by examining only the variables in the passive set and calculating their unconstrained least squares solution (Bro, 1997). The ANLS algorithm begins with an initial feasible set of regression coefficients. The zero vector of coefficients is often used as an initial feasible set as no constraints are violated. ANLS proceeds by iteratively removing variables from the active set until the true active set is found. The variables removed from the active set are used in an unconstrained linear regression to calculate the block coordinate descent solution. While the convergence properties of ANLS are better understood, this report omits this strategy in comparative analysis due to the complexity of the algorithm and its slow computation. Recent work has succeeded in improving ANLS speed by precomputing cross-product terms during the unconstrained linear regression calculations (Bro, 1997). 
 
 \section{Applications to gene expression}
 A classical example of NMF is the factorization of a large database of human face images. Factorization using PCA will yield a series of ?eigenfaces? which can be added or subtracted, but individual components are not easy to interpret on their own. The NMF "parts-based" representation however, yields components like noses, eyes, ears, and mouths which can be added linearly to construct a face. Parts-based representations have been helpful in identifying and interpreting patterns in a number of biological contexts. 
@@ -127,6 +145,10 @@ A classical example of NMF is the factorization of a large database of human fac
 NMF has shown to be less sensitive to \textit{a priori} gene selection or initial conditions when identifying context-dependent patterns of gene expression (Brunet, 2004). 
 
 The same properties have been found to be helpful in a number of biological contexts. 
+
+\section{Sparsity in Alternating least squares}
+
+
 
 \section{Initialization conditions}
 

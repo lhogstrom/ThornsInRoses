@@ -16,6 +16,8 @@
 \graphicspath{ {"/Users/hogstrom/Dropbox (Personal)/cources_spring_2015_MIT/18_335_Numeric_Methods/NMF/figures/"} }
 \DeclareGraphicsExtensions{.pdf,.png,.jpg}
 
+\usepackage{amsmath}
+
 \begin{document}
 
 Larson Hogstrom 
@@ -26,8 +28,7 @@ Final Project
 
 April 16, 2015 \\
 
-$\bf{H = H .* (W^T A) ./ (W^T WH)} $
-
+Unfortunately, ANLS subproblems are not unique as there exists scaling and permutation matrices $ X \in \Re^{kxk} $ which represent scaling and permutation that satisfy $ || \textbf{A - WH} ||_{F} = || \textbf{A - WXX}^{-1} \textbf{H} ||_{F} $ (Kim, 2006).  
 
 \textbf{Outline}
 
