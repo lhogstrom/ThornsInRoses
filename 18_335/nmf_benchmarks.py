@@ -11,7 +11,7 @@ wkdir = '/Users/hogstrom/Dropbox (Personal)/cources_spring_2015_MIT/18_335_Numer
 
 n=5
 ### plot error from matrix of increasing size
-a = [ pow(2,i) for i in range(13) ]
+a = [ pow(2,i) for i in range(12) ]
 meanVec = np.zeros((2,len(a)))
 for i,m in enumerate(a):
     print m 
@@ -26,18 +26,21 @@ for i,m in enumerate(a):
     #backward-like stability measure
     diffMtrx = np.dot(w1,h1) - np.dot(wo,ho)
     diffMtrx2 = np.dot(w1,h1) - np.dot(w_pg,h_pg)
-    meanVec[0,i] = diffMtrx.mean()
-    meanVec[1,i] = diffMtrx2.mean()
+    # meanVec[0,i] = diffMtrx.mean()
+    # meanVec[1,i] = diffMtrx2.mean()
+    meanVec[0,i] = np.linalg.norm(diffMtrx, ord=None) #Frobenius norm
+    meanVec[1,i] = np.linalg.norm(diffMtrx2, ord=None) #Frobenius norm
 #plot changes in error 
 fig = plt.figure()
 ax = fig.add_subplot(1,1,1)
 plt.plot(a,meanVec[0,:],color='b',label='multiplicative_update')
 plt.plot(a,meanVec[1,:],'r--',label='gradient_projection')
 ax.set_xscale('log')
-plt.title('NMF entry error')
-plt.xlabel('matrix length')
-plt.ylabel('mean error')
-plt.legend(loc=2)
+ax.set_yscale('log')
+plt.title('Error in NMF estimation')
+plt.xlabel('input matrix length')
+plt.ylabel('error norm')
+plt.legend(loc=4)
 outFile = os.path.join(wkdir, 'projection_gradient_vs_multiplicative_update_error.png')
 plt.savefig(outFile)
 plt.close()
@@ -73,7 +76,7 @@ plt.close()
 
 
 ### ALS vs multiplicative update - convergence with increased iteration - 
-a = [ pow(2,i) for i in range(11) ]
+a = [ pow(2,i) for i in range(12) ]
 m = 500
 n = 5
 meanVec = np.zeros((2,len(a)))
@@ -217,7 +220,43 @@ plt.title('Sparsity of W matrix')
 plt.xlabel('lambda')
 plt.ylabel('fraction of nearzero entries')
 plt.legend(loc=7)
-outFile = os.path.join(wkdir, 'ALS_vs_ACLS_sparsity.png')
-plt.savefig(outFile)
+outFile = os.path.join(wkdir, 'ALS_vs_ACLS_sparsity.pdf')
+plt.savefig(outFile,format='pdf')
 plt.close()
 
+
+### ACLS - multiplicative update vs gradient - ERROR 
+a = [ pow(2,i) for i in range(1,11) ]
+meanVec = np.zeros((2,len(a)))
+for i,j in enumerate(a):
+    print j
+    w1 = np.random.rand(m,n)
+    h1 = np.random.rand(n,m)
+    v = np.dot(w1,h1)
+    #nmf decomposition of v:
+    # ALS method
+    Winit = np.random.rand(m,n)
+    Hinit =np.random.rand(n,m)
+    (wo,ho) = nmflh.nmf_mu(v,Winit, Hinit,5,j)
+    # projection gradient
+    (w_pg,h_pg) = nmf(v, Winit, Hinit, 0.000001, 10, j)
+    #backward-like stability measure
+    diffMtrx = np.dot(w1,h1) - np.dot(wo,ho)
+    diffMtrx2 = np.dot(w1,h1) - np.dot(w_pg,h_pg)
+    # residual norm
+    meanVec[0,i] = np.linalg.norm(diffMtrx, ord=None) #Frobenius norm
+    meanVec[1,i] = np.linalg.norm(diffMtrx2, ord=None) #Frobenius norm
+# plot
+fig = plt.figure()
+ax = fig.add_subplot(1,1,1)
+plt.plot(a,meanVec[0,:],color='b',label='MU method')
+plt.plot(a,meanVec[1,:],'r--',label='PG method')
+ax.set_xscale('log')
+ax.set_yscale('log')
+plt.title('Error in NMF estimation')
+plt.xlabel('n iteration')
+plt.ylabel('norm residual')
+plt.legend(loc=1)
+outFile = os.path.join(wkdir, 'MU_vs_PG_error.png')
+plt.savefig(outFile)
+plt.close()

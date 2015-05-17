@@ -40,11 +40,11 @@ C This report presents a framework and analysis to compare three common methods 
 
 \section{Introduction}
 
-Non-negative data is pervasive in many domains. Chemical concentrations, word counts from written text, and pixels in digital images all take strictly non-negative values. Researchers working with these and related datatypes often seek to manipulate and interpret large matrices of input data. Low-rank approximations can aid in identifying the most important components of such data by ignoring nonessential components related to noise or known artifacts. Common goals in performing such low-rank approximations include clustering similar items into groups, retrieving related samples based on an user's input query, or isolating representative components of the data that can be directly interpreted \cite{Lan}.  
+Non-negative data is ubiquitous in many domains. Chemical concentrations, word counts from written text, and pixels in digital images all take strictly non-negative values. Researchers working with these and related datatypes often seek to manipulate and interpret large matrices of input data. Low-rank approximations can aid in identifying the most important components of such data by ignoring nonessential components related to noise or known artifacts. Common goals in performing such low-rank approximations include clustering similar items into groups, retrieving related samples based on an user's input query, or isolating representative components of the data that can be directly interpreted \cite{Lan}.  
 
 Nonnegative matrix factorization (NMF) is a dimensionality reduction technique that  has been employed to address a variety of scientific and engineering challenges including text data mining \cite{Pau,Lan,LeSe1} chemometrics \cite{Paa1,Paa2}, and microarray analysis \cite{Bur}. Like principal component analysis (PCA), NMF seeks to describe a large matrix of data using a small set of information dense components. Unlike PCA, which imposes orthogonality constraints on components, NMF requires nonnegativity after factorization. This procedure allows for only additive combinations of positive components to estimate the input matrix. The endpoint is a parts-based representation of the starting data where each component is more easily interpreted than PCA. 
 
-A number of algorithms have been proposed in order to construct NMF factorization with non-negative constraints. This approach was largely popularized by a 1999 article by Lee and Seung \cite{LeSe1}. Their study, written for a general audience, examined the benefits of parts-based representations and presented applications of NMF to domains including text analysis and the decomposition of facial images. The report was followed by an additional study outlining more mathematical details of NMF as well as a simple multiplicative update algorithm \cite{LeSe2}. The publications of Lee and Seung, however, were predated by lesser known work by Pentti Paatero. The method he developed and named 'positive matrix factorization' was based on a constrained alternating least squares algorithm and represents the first presentation of what is today known as NMF \cite{Paa1,Paa2}. 
+A number of algorithms have been proposed in order to construct NMF factorization with non-negative constraints. This approach was largely popularized by a 1999 article by Lee and Seung \cite{LeSe1}. Their study, written for a general audience, examined the benefits of parts-based representations and presented applications of NMF to domains including text analysis and the decomposition of facial images. The report was followed by an additional study outlining more mathematical details of NMF as well as a simple multiplicative update algorithm \cite{LeSe2}. The publications of Lee and Seung, however, were predated by lesser known work by Pentti Paatero. The method he developed and named `positive matrix factorization' was based on a constrained alternating least squares algorithm and represents the first presentation of what is today known as NMF \cite{Paa1,Paa2}. 
 
 
 
@@ -59,7 +59,13 @@ This project compares multiple algorithms for computing NMF factorization includ
 fixed-point type methods 
 minimization problem with bounded constraints 
 
-For the purposes of this study, algorithms are implemented and evaluated in the python language using the 'numpy' and 'scipy' packages for scientific computation. In simulations, the algorithms are compared by their accuracy after a fixed number of iterations. To illustrate a real-world applications of NMF, non-negative, low-rank approximations were used to describe gene expression profiles of known pharmacological groups. This proceeding report is organized in the following structure. Section 2 defines the NMF approach and reviews commonly used objective functions. Section 3 outlines the multiplicative update rule which is one of the oldest and most widely used procedures to perform matrix decomposition with NMF. Section 4 covers the alternating least squares approach which variations with better characterized convergence properties. This is followed by a discussion of sparsity and initialization conditions. 
+For the purposes of this study, algorithms are implemented and evaluated in the python language using the `numpy' and `scipy' packages for scientific computation. In simulations, the algorithms are compared by their accuracy after a fixed number of iterations. To illustrate a real-world applications of NMF, non-negative, low-rank approximations were used to describe gene expression profiles of known pharmacological groups. This proceeding report is organized in the following structure. Section 2 defines the NMF approach and reviews commonly used objective functions. Section 3 outlines the multiplicative update rule which is one of the oldest and most widely used procedures to perform matrix decomposition with NMF. Section 4 covers the alternating least squares approach which variations with better characterized convergence properties. This is followed by a discussion of sparsity and initialization conditions. 
+
+\begin{figure}[t!]
+  \centering
+    \includegraphics[width=.5\linewidth]{NMF_faces_Lee_Seung_1999}
+  \caption{A comparison of NMF and SVD in creating low-rank approximations of facial data. The parts-based representation of NMF yields comments that can be directly interpreted as facial features such as noses, mouths and eyes. The interpretation of SVD components is more challenging. Reproduced from Lee and Seung, 1999.}
+\end{figure}
 
 \section{Problem Definition and Objective Functions}
 
@@ -111,24 +117,31 @@ $\bf{H} \gets $ random dense (k x n) matrix\\
 	
  	$\bf{W = W .* (A H^T) ./ (WHH^T)} $	}
  \caption{Multiplicative update}
-\end{algorithm} 
+\end{algorithm}
 
-It is important to note that this approach will breakdown if a zero appears in the denominator. In practice, it is common to add a very small floating point value to the denominator during each iteration. The required work of O(mnk) per iteration is quite high compared to other exiting algorithms and multiplicative update tends to converge slowly for real world problems. Nevertheless, with its early establishment and its straightforward implementation this algorithm has maintained popularity for NMF computation. 
+\begin{figure}[t!]
+  \centering
+    \includegraphics[width=.5\linewidth]{NMF_MU_vs_PG_error}
+  \caption{Error comparison of multiplicative update and projection gradient methods for performing NMF calculation. Both algorithms were applied to a matrix of fixed size and the number of iterations were systematically increased.}
+\end{figure}
+
+The multiplicative update algorithm (Alg. 1) was compared to the NMF projection gradient method from \cite{Lin} which is built into the python scientific computing package. The projection gradient method is a more complex and refined approach that approaches NMF as a minimization problem with bound constraints (see KKT conditions listed in equation 4.3). Figure 2 shows the normed error of NMF estimation after a fixed number of iterations with Alg. 1 and the projection gradient method. The relative error multiplicative update increases with the size of the input matrix (see Fig. 3), though this is consistent with results from the projection gradient algorithm. It is important to note that the multiplicative approach will breakdown if a zero appears in the denominator. In practice, it is common to add a very small floating point value to the denominator during each iteration. The required work of O(mnk) per iteration is quite high compared to other exiting algorithms and multiplicative update tends to converge slowly for real world problems. Nevertheless, with its early establishment and its straightforward implementation this algorithm has maintained popularity for NMF computation. 
+
+\begin{figure}[t!]
+  \centering
+    \includegraphics[width=.5\linewidth]{NMF_projection_gradient_vs_multiplicative_update_error}
+  \caption{Estimation error of multiplicative update and projection gradient methods increase at approximately the same rate with increasing matrix size.}
+\end{figure}
 
 \section{Alternating Least Squares} The alternating least squares can be viewed as a special case of block coordinate descent method. For this class of algorithms, the objective function is minimized with respect to coordinate vectors $x^{k}_{i}$. Multidimensional vectors are minimized in cyclical order, with one block coordinate vector minimized during each iteration (Berstekas, 1999). A single iteration takes the form:
 \begin{equation}\label{bcv1}
  x^{k+1}_{i} \in {\mathrm{argmin}_{\varepsilon \in X_i}} = f( x^{k+1}_{1}, ..., x^{k+1}_{i-1}, \varepsilon, x^{k}_{i+1}, ..., x^{k}_{n})
 \end{equation}
 For the case of NMF, this scenario is especially simple as there are only two block variables, W and H. Sequentially one matrix is fixed and the other is improved. 
-
 \begin{equation}\label{bcv2}
 W^{k+1} = {\mathrm{argmin}_{W \ge 0} f(W,H^k}) \\
 H^{k+1} = {\mathrm{argmin}_{H \ge 0} f(W^{k+1},H})
 \end{equation}
-
-
-
-
 This takes advantage of the fact that while objective (2.1) is not convex in both W and H, it is convex in either W or H individually. One basic least ALS algorithm to accomplish this outlined by Berry et al \cite{Ber}. This strategy imposes nonnegativity by setting all nonzero entries of W and H to zero during each iteration. Unlike multiplicative update rules, however these zero entries are not forced to remain at 0 for all proceeding iterations. \\
 
 \begin{algorithm}[H]	
@@ -149,7 +162,14 @@ $\bf{H} \gets $ random dense (k x n) matrix\\
  \caption{Alternating least squares}
 \end{algorithm} 
 
-Each subproblem from in this algorithm is solved in an unconstrained manner and the resulting W and H solutions are modified during each iteration to satisfy the desired non-negativty constraints. The simplicity of setting negative values in W and H to zero provides for an especially fast approach as demonstrated in the comparisons of this study. Theoretical evaluation of this algorithm's convergence properties, however, are difficult because each subproblem is formulated as an unconstrained least squares problem, but the solutions are directly modified and therefore do not map onto the original formulations. Other problem definitions allow for a framework to better understand the convergence properties of the two block coordinate descent method. Alternating non-negativity constrained least squares (ANLS) for instance provides a formulation that directly incorporates non-negative constraints in each block coordinate subproblem \cit{Kim1}. Adding the $W \ge 0$ and  $ H \ge 0 $ constraints onto equations () and () respectively, the Karush-Kuh-Tucker (KK) optimality conditions can be used to define stationary points of the objective function (2.1) iif
+Each subproblem from in this algorithm is solved in an unconstrained manner and the resulting W and H solutions are modified during each iteration to satisfy the desired non-negativty constraints. The simplicity of setting negative values in W and H to zero provides for an especially fast approach as demonstrated in the comparisons of this study. Theoretical evaluation of this algorithm's convergence properties, however, are difficult because each subproblem is formulated as an unconstrained least squares problem, but the solutions are directly modified and therefore do not map onto the original formulations. Other problem definitions allow for a framework to better understand the convergence properties of the two block coordinate descent method. Alternating non-negativity constrained least squares (ANLS) for instance provides a formulation that directly incorporates non-negative constraints in each block coordinate subproblem \cit{Kim1}. Adding the $W \ge 0$ and  $ H \ge 0 $ constraints onto equations () and () respectively, the Karush-Kuh-Tucker (KK) optimality conditions can be used to define stationary points of the objective function (2.1) if and only if
+
+\begin{figure}[t!]
+  \centering
+    \includegraphics[width=.5\linewidth]{NMF_ALS_vs_multiplicative_update_iteration_error}
+  \caption{Estimation error resulting from the alternating least squares algorithm compared to multiplicative update.}
+\end{figure}
+
 \begin{equation}\label{EKx}
  \begin{align}
   W \ge 0,\\
@@ -160,36 +180,26 @@ Each subproblem from in this algorithm is solved in an unconstrained manner and 
   H.* \bigtriangledown_Hf(W,H) = 0  
   \end{align}
 \end{equation}
-
-For the block coordinate descent algorithms, it has been shown that the limit point of a sequence of sub-blocks is a stationary point if each subproblem has a unique solution \cite{Ber2}. Unfortunately, ANLS subproblems are not unique as there exists matrices in the form $ \textbf{X} \in \Re^{kxk} $ which represent scaling and permutation that satisfy $ || \textbf{A - WH} ||_{F} = || \textbf{A - WXX}^{-1} \textbf{H} ||_{F} $ \cite{Kim1}.  In the case of two bock problems, however, stationary points can be found as the limit point of the sequence of two sub-block solutions \cite{Gri}. One classical approach to solving the two block subploblems is by way of an $\textit{active set algorithm}$ (Lawson, 1974). Here, the difference between a input matrix $ Y \in \Re^{lxp}$  and its resultant factorization cab be split into vectors:
-
+For the block coordinate descent algorithms, it has been shown that the limit point of a sequence of sub-blocks is a stationary point if each subproblem has a unique solution \cite{Ber2}. Unfortunately, ANLS subproblems are not unique as there exists matrices in the form $ \textbf{X} \in \Re^{kxk} $ which represent scaling and permutation that satisfy $ || \textbf{A - WH} ||_{F} = || \textbf{A - WXX}^{-1} \textbf{H} ||_{F} $ \cite{Kim1}.  In the case of two bock problems, however, stationary points can be found as the limit point of the sequence of two sub-block solutions \cite{Gri}. One classical approach to solving the two block subploblems is by way of an $\textit{active set algorithm}$ \cite{Law}. Here, the difference between a input matrix $ Y \in \Re^{lxp}$  and its resultant factorization cab be split into vectors:
 \begin{equation}
     \min_{G \ge 0} || BG-Y ||^{2}_{F} \to  \min_{G \ge 0} || B\textbf{g}_1-\textbf{y}_1 ||^{2}_{2}, ...,   \min_{G \ge 0} || B\textbf{g}_l-\textbf{y}_m ||^{2}_{2}
 \end{equation}
+where $ B \in \Re^{lxm}$ and $y_i \in \Re^{lx1}$. Since there are m inequity constraints after the split, the ith constraint will be active if the ith regression coefficient is set to zero. Thus if the active set is known, active constraints can be treated as equality constraints instead of inequality constraints. The overall least square problem can be solved by examining only the variables in the passive set and calculating their unconstrained least squares solution \cite{Bro}. The ANLS algorithm begins with an initial feasible set of regression coefficients. The zero vector of coefficients is often used as an initial feasible set as no constraints are violated. ANLS proceeds by iteratively removing variables from the active set until the true active set is found. The variables removed from the active set are used in an unconstrained linear regression to calculate the block coordinate descent solution. While the convergence properties of ANLS are better understood, this report omits this strategy in comparative analysis due to the complexity of the algorithm and its slow computation. Recent work has succeeded in improving ANLS speed by precomputing cross-product terms during the unconstrained linear regression calculations \cite{Bro}. 
 
-where $ B \in \Re^{lxm}$ and $y_i \in \Re^{lx1}$. Since there are m inequity constraints after the split, the ith constraint will be active if the ith regression coefficient is set to zero. Thus if the active set is known, active constraints can be treated as equality constraints instead of inequality constraints. The overall least square problem can be solved by examining only the variables in the passive set and calculating their unconstrained least squares solution (Bro, 1997). The ANLS algorithm begins with an initial feasible set of regression coefficients. The zero vector of coefficients is often used as an initial feasible set as no constraints are violated. ANLS proceeds by iteratively removing variables from the active set until the true active set is found. The variables removed from the active set are used in an unconstrained linear regression to calculate the block coordinate descent solution. While the convergence properties of ANLS are better understood, this report omits this strategy in comparative analysis due to the complexity of the algorithm and its slow computation. Recent work has succeeded in improving ANLS speed by precomputing cross-product terms during the unconstrained linear regression calculations (Bro, 1997). 
-
-\section{Sparsity in Alternating Least Squares} The sparsity of 
-
-The two potential benefits of increasing sparsity in NMF representations. First, there is potential for saving storage and future computation relative to dense representations that occur with dense factorization methods such as SVD. Second and more importantly, sparsity may aid in interpreting the NMF results. 
-
-To better control the fraction of zero or near zero entries, Kim and Park propose directly modifying The objective function of the ALS method. 
+\section{Sparsity in Alternating Least Squares} Sparse basis vectors often naturally arise during nonnegative matrix factorization. The are two potential benefits of sparsity in NMF representations. First, there is potential for saving storage and future computation relative to alternative low-rank approximations that occur with dense factorization methods such as SVD. Second and more importantly, sparsity may aid in interpreting the NMF results. It is often desirable to understand how input sample data can be constructed using a small number of parts-based representations, rather than being create from a linear combination of many diffuse components. The property of spareness, therefore, can aid in giving physical meaning to NMF results. A number of approaches have been created in order to manipulate sparsity in nonnegative matrix factorization \cite{Li, Kim1, Kim2}. To better control the fraction of zero or near zero entries, for example, Kim and Park propose directly modifying The objective function of the ALS method \cite{Kim2}. 
 \begin{equation}\label{ObjSpar}
  f( \W,H) = \frac{1}{2} [|| A - WH ||^{2}_{F} + \lambda_W || W ||^{2}_{F} + \lambda_H || H ||^{2}_{F} ]
 \end{equation}
-Here additional terms are used to 
-Added penalties to objective function to encourage sparse solutions. Xxx
-
-This can be easily incorporated into the two block coordinate framework 
+Here additional terms are used to penalize large positive values in the W and H factorization. These new penalties to objective function, therefore, encourage sparse solutions. This new objective function can be easily incorporated into the two block coordinate framework providing a new update rules for the W and H matrices:
 \begin{equation}
-    \min_{W \ge 0} || \left( \begin{array}{c} H^T   \\  \sqrt{\alpha_W}I_k \\ \end{array} \right) W^T- \left( \begin{array}{c} A^T   \\  0_{kxm} \\ \end{array} \right) ||^{2}_{F} 
+    \min_{W \ge 0} || \left( \begin{array}{c} H^T   \\  \sqrt{\lambda_W}I_k \\ \end{array} \right) W^T- \left( \begin{array}{c} A^T   \\  0_{kxm} \\ \end{array} \right) ||^{2}_{F} 
 \end{equation}
-where $I_k$ is the $k\text{ x }k$ identity matrix and  $0_k$ is a zero matrix with the size $k\text{ x }m$
+where $I_k$ is the $k\text{ x }k$ identity matrix and  $0_k$ is a zero matrix with the size $k\text{ x }m$. Similarly the update rule for the H matrix can be modified to: 
 \begin{equation}
-    \min_{H \ge 0} || \left( \begin{array}{c} W   \\  \sqrt{\alpha_H}I_k \\ \end{array} \right) H- \left( \begin{array}{c} A   \\  0_{kxm} \\ \end{array} \right) ||^{2}_{F} 
+    \min_{H \ge 0} || \left( \begin{array}{c} W   \\  \sqrt{\lambda_H}I_k \\ \end{array} \right) H- \left( \begin{array}{c} A   \\  0_{kxm} \\ \end{array} \right) ||^{2}_{F} 
 \end{equation}
-
-\begin{figure}[h!]
+These new update rules called alternating constrained least squares (ACLS)  were compared against the original alternating least squares approach outlined in section 4. The analysis presented in Fig. 1 shows the fraction of non-zero entries in the resulting W matrix for ALS and ACLS factorization. Similar results can be obtained by manipulating the $\lambda_H$ parameter for the H factorization matrix. These results show a powerful approach for researchers to control NMF sparsity according to their research question
+\begin{figure}[t!]
   \centering
     \includegraphics[width=.5\linewidth]{ALS_vs_ACLS_sparsity}
   \caption{NMF sparsity manipulation using the ACLS method. Increasing the value of $\lambda$ allows users to increase the fraction of near-zero entries in W and H.}
@@ -199,21 +209,22 @@ where $I_k$ is the $k\text{ x }k$ identity matrix and  $0_k$ is a zero matrix wi
 \section{Projection gradient method} 
 
 
-\section{Applications to gene expression}
-A classical example of NMF is the factorization of a large database of human face images. Factorization using PCA will yield a series of ?eigenfaces? which can be added or subtracted, but individual components are not easy to interpret on their own. The NMF "parts-based" representation however, yields components like noses, eyes, ears, and mouths which can be added linearly to construct a face. Parts-based representations have been helpful in identifying and interpreting patterns in a number of biological contexts. 
+\section{Applications to gene expression analysis}
+A classical example of NMF is the factorization of a large database of human face images. Factorization using PCA will yield a series of `eigenfaces' which can be added or subtracted, but individual components are not easy to interpret on their own. The NMF parts-based representation however, yields components like noses, eyes, ears, and mouths which can be added linearly to construct a face. Parts-based representations have been helpful in identifying and interpreting patterns in a number of biological contexts. For example, NMF has shown to be less sensitive to \textit{a priori} gene selection or initial conditions when identifying context-dependent patterns of gene expression \cite{Bur}.  
 
-NMF has shown to be less sensitive to \textit{a priori} gene selection or initial conditions when identifying context-dependent patterns of gene expression (Brunet, 2004). 
+To examine the ability of NMF to identify unique parts-based representations in gene expression profiles, experimental data was obtained from the Connectivity Map Projects (lincscloud.org). This database represents the world?s largest systematic collection of gene expression profiles performed in cancer cell lines. A small fraction of drug profiles were obtained from database. specifically, those drugs which were tested MCF7 cells and fit into one of four pharmacological classes; Topoisomerase II inhibitors, RAR agonists, PKC activators, and JNK inhibitors. These represent important chemical tools for research and clinical practice. The advantage examining this selection of drugs is that chemicals grouped in the same pharmacological classes are expected to have similar gene expression responses. The NMF was tested for its ability to recover these known relationships. 
 
-The same properties have been found to be helpful in a number of biological contexts. 
+\begin{figure}[t!]
+  \centering
+    \includegraphics[width=.5\linewidth]{NMF_pharmacological_classification}
+  \caption{Nonnegative matrix factorization used to identify parts-based representations in gene expression profiles. The weighting factors from the H matrix are displayed for drugs from four pharmacological class tested in MCF7 cells. Drug profiles from the same pharmacological class can be constructed using similar NMF components.}
+\end{figure}
 
-The similar results found with ALS and gradient projection, point to the importance of other factors. The effects of sparsity were not examined with this particular dataset, but could have a significantly influence on the interpretation of the NMF results. Other factors, including smoothness, ____ and ___ could also impact the 
+Both ALS and multiplicative update approaches were applied to this data. The number of components was selected \textit{a priori} at k=20. Fig. () shows H weighting factors for the 20 NMF components obtained with multiplicative update rule for each of the four pharmacological classes. Similar patterns were also found for ALS (though with different component ordering.) The similarity of both these methods suggests researchers might opt to spend their time examining other numerical factors beside convergence that may influence biological interpretation of NMF. The effects of sparsity were not examined with this particular dataset, but could have a significantly influence on the interpretation of the NMF results. Other factors, including smoothness, and the uniqueness of factorization could also impact the biological findings. New numerical approaches that give better control on components constraints could improve the utility of NMF in biomedical research. 
 
 \section{Initialization conditions}
 
-\section{Additional computational issues}
--Sparsity 
-
-\section{Conclusion} Despite the simplicity of defining nonnegative matrix factorization, the landscape of numeric methods used to address the problem remains complex. Recent efforts have sought to create new NMF algorithms with well defined convergence properties. Methods such as alternating non-negativity constrained least squares (ANLS) have succeeded in improving our analytical understanding of NMF convergence, but remain slow and cumbersome when compared to simpler methods that appear to converge in most real-world scenarios. When evaluating NMF tools, researchers should be guided by the parameters of their data and the research question of interest. For especially large datasets the speed and simplicity ALS might serve as a reasonable starting point for NMF calculation. Researchers with modest datasets, might prefer ___ . The results presented in this report also show that researchers can manipulate the sparsity of factorization by adopting specialized objective functions. 
+\section{Conclusion} Despite the simplicity of defining nonnegative matrix factorization, the landscape of numeric methods used to address the problem remains complex. Recent efforts have sought to create new NMF algorithms with well defined convergence properties. Methods such as alternating non-negativity constrained least squares (ANLS) have succeeded in improving our analytical understanding of NMF convergence, but remain slow and cumbersome when compared to simpler methods that appear to converge in most real-world scenarios. When evaluating NMF tools, researchers should be guided by the parameters of their data and the research question of interest. For especially large datasets the speed and simplicity ALS might serve as a reasonable starting point for NMF calculation. Researchers with modest datasets, might prefer ANLS or the multiplicative update approach. Finally, the results presented in this report also show that researchers can manipulate the sparsity of factorization by adopting specialized objective functions. 
 
 \begin{thebibliography}{1}
 
@@ -279,6 +290,9 @@ The similar results found with ALS and gradient projection, point to the importa
 
 \bibitem{Lin} {\sc C. Lin},
 {\em Projected Gradient Methods for Nonnegative Matrix Factorization}, Neural Computation (2007) 19, 2757-2779. 
+
+\bibitem{Li} {\sc S. Li},
+{\em Learning spatially localized parts-based representations}, Pro. IEEE Conference on Computer Vis. and Patt. Rec. (2001) pp. 207-212. 
 
 \end{thebibliography}
 
