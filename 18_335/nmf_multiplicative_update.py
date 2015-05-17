@@ -69,3 +69,75 @@ def nmf_ALS(A,Winit,Hinit,timelimit,maxiter):
     W[iW_neg] = 0 #set nonnegative values to 0
 
  return (W,H)   
+
+def nmf_ACLS(A,Winit,Hinit,lh,lw,timelimit,maxiter):
+ """
+ alternating least squares method that also imposes sparcity on the
+ factorization. From Albright & Cox, 2006
+
+ lh - lambda h - controls sparcity of H matrix
+ lw - lambda w - controls sparcity of W matrix
+ """
+ 
+ W = Winit; 
+ #H = Hinit; 
+ initt = time();
+ 
+ for i in range(maxiter):
+    if time() - initt > timelimit: break
+    #update H
+    m1 = np.dot(W.T,W) 
+    m1 = m1 + lh*np.identity(m1.shape[0])
+    h = np.linalg.lstsq(m1,np.dot(W.T,A))
+    H = h[0]
+    iH_neg = H < 0
+    H[iH_neg] = 0 #set nonnegative values to 0
+
+    #update W
+    m2 = np.dot(H,H.T)
+    m2 = m2 + lw*np.identity(m2.shape[0]) 
+    w = np.linalg.lstsq(m2,np.dot(H,A.T))
+    W = w[0].T
+    iW_neg = H < 0
+    W[iW_neg] = 0 #set nonnegative values to 0
+
+ return (W,H)   
+
+def nmf_AHCLS(A,Winit,Hinit,lh,lw,ah,aw,timelimit,maxiter):
+ """
+ alternating least squares method that also imposes sparcity on the
+ factorization. From Albright & Cox, 2006
+
+ lh - lambda h - controls sparcity of H matrix
+ lw - lambda w - controls sparcity of W matrix
+ """
+ 
+ W = Winit
+ k = Winit.shape[1]
+ bh = np.square((1-ah)*np.sqrt(k) + ah)
+ bw = np.square((1-aw)*np.sqrt(k) + aw)
+
+ #H = Hinit; 
+ initt = time();
+ 
+ for i in range(maxiter):
+    if time() - initt > timelimit: break
+    #update H
+    m1 = np.dot(W.T,W) 
+    m1 = m1 + bh*lh*np.identity(m1.shape[0])
+    m1 = m1 - lh*np.ones(m1.shape)
+    h = np.linalg.lstsq(m1,np.dot(W.T,A))
+    H = h[0]
+    iH_neg = H < 0
+    H[iH_neg] = 0 #set nonnegative values to 0
+
+    #update W
+    m2 = np.dot(H,H.T)
+    m2 = m2 + bw*lw*np.identity(m2.shape[0])
+    m2 = m2 - lw*np.ones(m2.shape)
+    w = np.linalg.lstsq(m2,np.dot(H,A.T))
+    W = w[0].T
+    iW_neg = H < 0
+    W[iW_neg] = 0 #set nonnegative values to 0
+
+ return (W,H)   

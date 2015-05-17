@@ -6,11 +6,12 @@
 
 \documentclass[final,leqno,onefignum,onetabnum]{siamltex1213}
 
-\usepackage{graphicx}
 \usepackage{algorithm2e}
 \usepackage{amsmath}
 
-\graphicspath{ {"/Users/hogstrom/Dropbox (Personal)/cources_spring_2015_MIT/18_335_Numeric_Methods/NMF/figures/"} }
+\usepackage{graphicx}
+%% \graphicspath{ {"/Users/hogstrom/Dropbox (Personal)/cources_spring_2015_MIT/18_335_Numeric_Methods/NMF/figures/"} }
+\graphicspath{ {/Users/hogstrom/Documents/code/ThornsInRoses/18_335} }
 \DeclareGraphicsExtensions{.pdf,.png,.jpg}
 
 \title{Numeric methods for Nonnegative matrix factorization \thanks{A final project for 18.335, Spring 2015}} 
@@ -25,7 +26,7 @@
 \slugger{mms}{xxxx}{xx}{x}{x--x}%slugger should be set to mms, siap, sicomp, sicon, sidma, sima, simax, sinum, siopt, sisc, or sirev
 
 \begin{abstract}
-This report presents a framework and analysis to compare three common methods used to compute nonnegative matrix factorization (NMF). The parts-based representation obtained through NMF has become a popular approach for dimensionality reduction in a variety of scientific and technical domain. This study focuses on the algorithms and numerical aspects of NMF computation. We review the derivation and continual descent properties of multiplicative update rules which helped to first popularized the NMF approach. Alternating least squares and projection gradient methods are also presented as faster, more recent approaches. The accuracy and convergence of these algorithms is compared using simulated data and two of the methods were applied to a database gene expression profiles measuring drug responses in the MCF7 cancer cell line. Lastly, the objective function of alternating least squares was directly modified to impose sparsity during matrix factorization. The fraction of near-zero entries was compared before and after ALS modification as sparsity results are of known interest to many researchers using NMF. 
+This report presents a framework and analysis to compare three common methods for computing nonnegative matrix factorization (NMF). The parts-based representation obtained through NMF has become a popular approach for dimensionality reduction in a variety of scientific and technical domain. This study focuses on the algorithms and numerical aspects of NMF computation. We review the derivation and continual descent properties of the multiplicative update rules which helped to first popularized the NMF approach. Alternating least squares and projection gradient methods are also presented as faster, more recent approaches. The accuracy and convergence of these algorithms is compared using simulated data and two of the methods were applied to a database of gene expression profiles measuring drug responses in the MCF7 cancer cell line. Lastly, the objective function of alternating least squares was directly modified to impose sparsity during matrix factorization. The fraction of near-zero entries was compared before and after ALS modification as sparsity results are of known interest to many researchers using NMF. 
 \end{abstract}
 
 \begin{keywords} dimensionality reduction, matrix factorization, least squares, nonnegativity, data representation \end{keywords}
@@ -38,13 +39,15 @@ This report presents a framework and analysis to compare three common methods us
 
 \section{Introduction}
 
-Non-negative data is pervasive in many domains. Chemical concentrations, word counts from written text, and pixels in digital images all take strictly non-negative values. Researchers working these and related datatypes often seek to manipulate and interpret large matrices of input data. Low-rank approximations can aid in identifying the most important components of such data by ignoring nonessential components related to noise or known artifacts. Common goals in performing such low-rank approximations include clustering similar items into groups, retrieving related samples based on an user's input query, or isolating representative components of the data that can be directly interpreted (Langville, 2006).  
+Non-negative data is pervasive in many domains. Chemical concentrations, word counts from written text, and pixels in digital images all take strictly non-negative values. Researchers working with these and related datatypes often seek to manipulate and interpret large matrices of input data. Low-rank approximations can aid in identifying the most important components of such data by ignoring nonessential components related to noise or known artifacts. Common goals in performing such low-rank approximations include clustering similar items into groups, retrieving related samples based on an user's input query, or isolating representative components of the data that can be directly interpreted (Langville, 2006).  
 
-Nonnegative matrix factorization (NMF) is a dimensionality reduction technique that  been successfully applied to ___. Like principal component analysis (PCA), NMF seeks to describe a large matrix of data using a small set of information dense components. Unlike PCA, which imposes orthogonality constraints on components, NMF requires nonnegativity after factorization. This procedure allows for only additive combinations of positive components to estimate the input matrix. The endpoint is a parts-based representation of the starting data where each component is more easily interpreted than PCA. 
+Nonnegative matrix factorization (NMF) is a dimensionality reduction technique that  has been employed to address a variety of scientific and engineering challenges including text data mining (Pauca, 2004; Langville, 2006) chemometrics (Paatero, 1994 and 1997), and microarray analysis (Brunet, 2006). Like principal component analysis (PCA), NMF seeks to describe a large matrix of data using a small set of information dense components. Unlike PCA, which imposes orthogonality constraints on components, NMF requires nonnegativity after factorization. This procedure allows for only additive combinations of positive components to estimate the input matrix. The endpoint is a parts-based representation of the starting data where each component is more easily interpreted than PCA. 
 
 A number of algorithms have been proposed in order to construct NMF factorization with non-negative constraints. This approach was largely popularized by a 1999 article by Lee and Seung (Lee, 1999). Their study, written for a general audience, examined the benefits of parts-based representations and presented applications of NMF to domains including text analysis and the decomposition of facial images. The report was followed by an additional study outlining more mathematical details of NMF as well as a simple multiplicative update algorithm (Lee, 2001). The publications of Lee and Seung, however, were predated by lesser known work by Pentti Paatero. The method he developed and named 'positive matrix factorization' was based on a constrained alternating least squares algorithm and represents the first presentation of what is today known as NMF (Paatero, 1994 and 1997). 
 
-To date, ___
+
+
+To date, 
 Iterative algorithms, for example, build factorized components while converging on a local minimum of a specified object function. 
 
 -problem with NMF - no unique solution 
@@ -155,6 +158,13 @@ where $ B \in \Re^{lxm}$ and $y_i \in \Re^{lx1}$. Since there are m inequity con
 
 \section{Sparsity in Alternating least squares}
 Added penalties to objective function to encourage sparse solutions. 
+
+\begin{figure}[h!]
+  \caption{NMF sparsity manipulation}
+  \centering
+    \includegraphics{ALS_vs_ACLS_sparsity}
+\end{figure}
+
 
 \section{Projection gradient method} 
 

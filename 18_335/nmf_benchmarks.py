@@ -135,12 +135,89 @@ outFile = os.path.join(wkdir, 'multiplicative_update_time.png')
 plt.savefig(outFile)
 plt.close()
 
+### ACLS - sparcity constraints - ERROR
+a = [ pow(2,i) for i in range(11) ]
+meanVec = np.zeros((2,len(a)))
+for i,j in enumerate(a):
+    print j
+    w1 = np.random.rand(m,n)
+    h1 = np.random.rand(n,m)
+    v = np.dot(w1,h1)
+    #nmf decomposition of v:
+    # ALS method
+    Winit = np.random.rand(m,n)
+    Hinit =np.random.rand(n,m)
+    lw = 2
+    lh = 2
+    (w_acls,h_acls) = nmflh.nmf_ACLS(v, Winit, Hinit,lh,lw,5,j)
+    # ACLS method
+    (w_als,h_als) = nmflh.nmf_ALS(v, Winit, Hinit,5,j)
+    #backward-like stability measure
+    diffMtrx = np.dot(w1,h1) - np.dot(w_als,h_als)
+    diffMtrx2 = np.dot(w1,h1) - np.dot(w_acls,h_acls)
+    # residual norm
+    meanVec[0,i] = np.linalg.norm(diffMtrx, ord=None) #Frobenius norm
+    meanVec[1,i] = np.linalg.norm(diffMtrx2, ord=None) #Frobenius norm
+# plot
+fig = plt.figure()
+ax = fig.add_subplot(1,1,1)
+plt.plot(a,meanVec[0,:],color='b',label='ALS method')
+plt.plot(a,meanVec[1,:],'r--',label='ACLS method')
+ax.set_xscale('log')
+ax.set_yscale('log')
+plt.title('NMF iteration')
+plt.xlabel('n iteration')
+plt.ylabel('norm residual')
+plt.legend(loc=7)
+outFile = os.path.join(wkdir, 'ALS_vs_ACLS_error.png')
+plt.savefig(outFile)
+plt.close()
 
-# try gradient descent method
-# m = 20
-# n = 500
-# w1 = np.random.rand(m,n)
-# h1 = np.random.rand(n,m)
-# v = np.dot(w1,h1)
-# (wo,ho) = nmflh.nmf_gd(v,np.random.rand(m,n), np.random.rand(n,m),5,1000, .001)
-# diffMtrx = np.dot(w1,h1) - np.dot(wo,ho)
+#sparcity measure 
+def percent_nearzero(M,thresh):
+    n_entries = M.shape[0]*M.shape[1]
+    above_nearzero = M > thresh
+    pnz = above_nearzero.sum()/ np.float(n_entries) #percent_nearzero
+    return pnz
+### ACLS - sparsity constraints - Sparsity
+a = [ pow(2,i) for i in range(15) ]
+a = np.array(a)/100.0
+meanVec = np.zeros((2,len(a)))
+for i,lw in enumerate(a):
+    print lw
+    w1 = np.random.rand(m,n)
+    h1 = np.random.rand(n,m)
+    v = np.dot(w1,h1)
+    #nmf decomposition of v:
+    # ALS method
+    Winit = np.random.rand(m,n)
+    Hinit =np.random.rand(n,m)
+    lh = lw
+    j = 10 #n_iter
+    # ACLS method
+    (w_acls,h_acls) = nmflh.nmf_ACLS(v, Winit, Hinit,lh,lw,5,j)
+    # AHCLS method
+    # (w_acls,h_acls) = nmflh.nmf_AHCLS(v, Winit, Hinit,lh,lw,.5,.5,5,j)
+    # ALS method
+    (w_als,h_als) = nmflh.nmf_ALS(v, Winit, Hinit,5,j)
+    #backward-like stability measure
+    near_zero_thresh = .0001
+    # percent_nearzero(h_als,near_zero_thresh)
+    # percent_nearzero(h_acls,near_zero_thresh)
+    # residual norm
+    meanVec[0,i] = percent_nearzero(w_als,near_zero_thresh)
+    meanVec[1,i] = percent_nearzero(w_acls,near_zero_thresh)
+# plot
+fig = plt.figure()
+ax = fig.add_subplot(1,1,1)
+plt.plot(a,meanVec[0,:],color='b',label='ALS method')
+plt.plot(a,meanVec[1,:],'r--',label='ACLS method')
+ax.set_xscale('log')
+plt.title('Sparsity of W matrix')
+plt.xlabel('lambda')
+plt.ylabel('fraction of nearzero entries')
+plt.legend(loc=7)
+outFile = os.path.join(wkdir, 'ALS_vs_ACLS_sparsity.png')
+plt.savefig(outFile)
+plt.close()
+
