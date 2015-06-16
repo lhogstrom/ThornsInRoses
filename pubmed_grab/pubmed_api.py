@@ -11,8 +11,9 @@ Entrez.email = "Your.Name.Here@example.org"
 # search_term = ".com&Cambridge, MA"
 # search_term = ".com&Boston"
 #search_term = "Novartis&Cambridge, MA"
-search_term = "adjuvant&breast&Cambridge, MA"
-oFile = outDir + '/adjuvant_therapy_tbl.txt'
+# search_term = "oncology&.com&Cambridge, MA"
+search_term = "regulatory&.com&Cambridge, MA"
+oFile = outDir + '/regulatory_tbl.txt'
 # search_term = "Oncotype&Cambridge"
 # oFile = outDir + '/oncotype_dx_tbl.txt'
 handle = Entrez.esearch(db="pubmed", rettype="abstract", term=search_term,retmax=100)
@@ -36,9 +37,12 @@ else:
         # title
         article_dict['journal'] = a_rec['MedlineCitation']['Article']['Journal']['Title']
         # date
-        date_entry = a_rec['MedlineCitation']['Article']['ArticleDate']
-        if date_entry:
-            article_dict['Date'] = date_entry[0]['Year']
+        date_entry = a_rec['MedlineCitation']['Article']['Journal']['JournalIssue']['PubDate']
+        # date_entry = a_rec['MedlineCitation']['Article']['Journal']['JournalIssue']['PubDate']['MedlineDate']
+        # date_entry = a_rec['MedlineCitation']['Article']['ArticleDate']
+        if date_entry.has_key('Year'):
+            # article_dict['Date'] = date_entry[0]['Year']
+            article_dict['Date'] = date_entry['Year']
         # title
         art_title = a_rec['MedlineCitation']['Article']['ArticleTitle']
         art_title = ''.join([i if ord(i) < 128 else ' ' for i in art_title]) #remove non ascii
@@ -56,7 +60,7 @@ else:
     aFrm = pd.DataFrame(articles_dict)
     aFrm = aFrm.T # transpose
     # save file
-    #aFrm.to_csv(oFile,sep='\t', encoding='utf-8')
+    aFrm.to_csv(oFile,sep='\t', encoding='utf-8')
 # journal_name = record[0]['MedlineCitation']['Article']['Journal']['Title']
 # abstract_text = record[0]['MedlineCitation']['Article']['Abstract']
 
