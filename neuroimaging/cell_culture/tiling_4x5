@@ -1,0 +1,4 @@
+run("Grid/Collection stitching", "type=[Grid: row-by-row] order=[Left & Up] grid_size_x=4 grid_size_y=4 tile_overlap=15 first_file_index_i=18 directory=[/Users/hogstrom/Dropbox (MIT)/imaging_data/20150617] file_names=[MAP2_SYN1_SHANK3_{ii}_w1Conf 405.TIF] output_textfile_name=TileConfiguration.txt fusion_method=[Linear Blending] regression_threshold=0.30 max/avg_displacement_threshold=2.50 absolute_displacement_threshold=3.50 compute_overlap computation_parameters=[Save memory (but be slower)] image_output=[Fuse and display]");
+makeRectangle(426, 228, 42, 312);
+saveAs("Tiff", "/Users/hogstrom/Dropbox (MIT)/imaging_data/20150617/Fused1.tif");
+close();
