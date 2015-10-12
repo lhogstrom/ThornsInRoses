@@ -36,3 +36,5 @@ samtools view -hb /seq/picard_aggregation/D5227/NexPond-376014/current/NexPond-3
 #  INPUT=/dev/stdin \
 #  R=/seq/references/Homo_sapiens_assembly19/v1/Homo_sapiens_assembly19.fasta \
 #  OUTPUT=Solexa-272222.p${PROB}.raw_wgs_metrics2
+# view file according to read group number - 
+samtools view -r H01PE.3 $file1
