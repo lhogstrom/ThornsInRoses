@@ -6,3 +6,4 @@
 
 # run preseq on full WGS data
 /humgen/gsa-hpprojects/dev/hogstrom/code/preseq/preseq lc_extrap -B -o /humgen/gsa-hpprojects/dev/hogstrom/depth_by_read_group/NA12878_yield_estimates.txt /seq/picard_aggregation/G76270/NA12878/current/NA12878.bam
+
