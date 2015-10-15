@@ -11,10 +11,10 @@ bamdir=/seq/picard_aggregation/G76270/NA12878/current/ #wgs
 ###
 
 # WGS
-samtools view -h $bamdir/NA12878.bam \
-    -L $outdir/chrm21_full.bed \
-    -r H01PE.3 \
-    -o $outdir/NA12878_chrm21_H01PE3.bam
+# samtools view -h $bamdir/NA12878.bam \
+#     -L $outdir/chrm21_full.bed \
+#     -r H01PE.3 \
+#     -o $outdir/NA12878_chrm21_H01PE3.bam
 
 # Nexome
 # samtools view -h $bamdir/NexPond-376014.bam \

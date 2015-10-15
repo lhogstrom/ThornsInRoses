@@ -21,27 +21,18 @@ bamdir=/seq/picard_aggregation/D5227/NexPond-376014/current #nexome
 # done
 
 ### mark duplicates for each read group sets
-for i in {1..9}; do 
+# for i in {1..9}; do 
 
-    echo "read group set "$i
-    java -jar $picard MarkDuplicates \
-        INPUT=$outdir/NexPond-376014_chrm21_rg${i}.bam \
-        OUTPUT=$outdir/NexPond-376014_chrm21_rg${i}_dupMarked.bam \
-        METRICS_FILE=$outdir/NexPond-376014_chrm21_rg${i}_dup_Metrics.txt
+#     echo "read group set "$i
+#     java -jar $picard MarkDuplicates \
+#         INPUT=$outdir/NexPond-376014_chrm21_rg${i}.bam \
+#         OUTPUT=$outdir/NexPond-376014_chrm21_rg${i}_dupMarked.bam \
+#         METRICS_FILE=$outdir/NexPond-376014_chrm21_rg${i}_dup_Metrics.txt
 
-done
+# done
 
-
-
-
-### run SortSam 
-# java -jar $picard SortSam \
-#     INPUT=$outdir/NexPond-376014_chr21_rg_H23N7-1.bam \
-#     OUTPUT=$outdir/NexPond-376014_chr21_rg_H23N7-1_sorted.bam \
-#     SORT_ORDER=coordinate 
-
-
-# java -jar $picard MarkDuplicates \
-#     INPUT=$outdir/NexPond-376014_chrm21_H23N71.bam \
-#     OUTPUT=$outdir/NexPond-376014_chrm21_H23N71_dupMarked.bam \
-#     METRICS_FILE=$outdir/NexPond-376014_chrm21_H23N71_dup_Metrics.txt
+### run preseq to estimate libary yield
+/humgen/gsa-hpprojects/dev/hogstrom/code/preseq/preseq lc_extrap -B \
+-s 1e+05 \
+-o $outdir/NexPond-376014_chrm21_rg2_yield_estimates.txt \
+$outdir/NexPond-376014_chrm21_rg2_dupMarked.bam
